@@ -1,325 +1,493 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Class Attendance System</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jadhav Academy - Student Video Portal</title>
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    body {
-      background-color: #f3f4f6;
-      margin: 0;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .container {
-      max-width: 900px;
-      width: 100%;
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      margin: 0 0 16px 0;
-      font-size: 1.4rem;
-      text-align: center;
-      color: #111827;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    @media (max-width: 768px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-    }
-    .card {
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 16px;
-      background: #fafafa;
-    }
-    video {
-      width: 100%;
-      border-radius: 6px;
-      background: #000;
-      transform: scaleX(-1);
-    }
-    canvas { display: none; }
-    .form-group { margin-bottom: 10px; }
-    label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #374151;
-      margin-bottom: 4px;
-    }
-    input {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 0.95rem;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 6px;
-    }
-    .btn-primary { background-color: #2563eb; color: #fff; }
-    .btn-primary:hover { background-color: #1d4ed8; }
-    .btn-success { background-color: #16a34a; color: #fff; }
-    .btn-success:hover { background-color: #15803d; }
-    .btn-neutral { background-color: #4b5563; color: #fff; }
-    .btn-inline { width: auto; padding: 6px 12px; margin-top: 0; }
-    
-    .status-box {
-      margin-top: 12px;
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      background: #e5e7eb;
-      color: #1f2937;
-      min-height: 40px;
-      white-space: pre-wrap;
+    :root {
+      --primary: #1e3a8a;
+      --primary-light: #2563eb;
+      --accent: #f59e0b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --success: #16a34a;
     }
 
-    .register-section {
-      margin-top: 24px;
-      border-top: 2px solid #e5e7eb;
-      padding-top: 16px;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
     }
-    .register-header {
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
       display: flex;
+      flex-direction: column;
+    }
+
+    /* Header & Branding */
+    header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 12px;
+      gap: 1rem;
     }
-    .date-control {
+
+    .brand-section {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 1rem;
     }
-    .date-control input {
-      width: auto;
-      padding: 6px 10px;
+
+    .logo-container {
+      position: relative;
+      width: 52px;
+      height: 52px;
+      border-radius: 8px;
+      background: #eef2ff;
+      border: 1px dashed var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
     }
-    table {
+
+    .logo-container img {
       width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
+      height: 100%;
+      object-fit: cover;
     }
-    th, td {
-      border: 1px solid #e5e7eb;
-      padding: 10px 12px;
-      text-align: left;
-    }
-    th {
-      background-color: #f9fafb;
+
+    .logo-container span {
+      font-size: 0.65rem;
+      text-align: center;
+      color: var(--primary-light);
       font-weight: 600;
     }
-    .badge {
-      display: inline-block;
-      width: 28px;
-      height: 28px;
-      line-height: 28px;
-      border-radius: 50%;
-      text-align: center;
-      font-weight: 700;
-      color: white;
+
+    #logoInput {
+      display: none;
     }
-    .badge-present { background-color: #16a34a; }
-    .badge-absent { background-color: #dc2626; }
+
+    .brand-title h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: 0.5px;
+    }
+
+    .brand-title p {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* Auth Banner / Profile Bar */
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: #eff6ff;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      border: 1px solid #bfdbfe;
+    }
+
+    .btn-text {
+      background: none;
+      border: none;
+      color: var(--primary-light);
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* Layout Containers */
+    main {
+      flex: 1;
+      max-width: 1100px;
+      width: 100%;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Login Box */
+    #authView {
+      max-width: 420px;
+      margin: 3rem auto;
+      text-align: center;
+    }
+
+    .form-group {
+      margin: 1.25rem 0;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.4rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .phone-input-wrap {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .phone-input-wrap span {
+      background: #f1f5f9;
+      padding: 0.65rem 0.85rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--muted);
+      border-right: 1px solid var(--border);
+    }
+
+    .phone-input-wrap input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 0.65rem 0.75rem;
+      font-size: 1rem;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background 0.2s;
+    }
+
+    .btn-submit:hover {
+      background: var(--primary-light);
+    }
+
+    /* Class Buttons */
+    .class-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-class {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.55rem 1.1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-class:hover {
+      border-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .btn-class.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    /* Video Grid */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .video-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .video-thumb {
+      position: relative;
+      padding-top: 56.25%; /* 16:9 ratio */
+      background: #0f172a;
+    }
+
+    .video-thumb iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .video-details {
+      padding: 0.85rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .video-details h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .video-details .tag {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 0.7rem;
+      background: #dbeafe;
+      color: var(--primary-light);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h1>Class Attendance Portal</h1>
+  <!-- Top Bar -->
+  <header>
+    <div class="brand-section">
+      <label for="logoInput" class="logo-container" title="Click to upload/change logo">
+        <img id="logoPreview" class="hidden" alt="Academy Logo" />
+        <span id="logoPlaceholder">+ Upload Logo</span>
+      </label>
+      <input type="file" id="logoInput" accept="image/*" />
 
-  <div class="grid">
-    <div class="card">
-      <video id="webcam" autoplay playsinline></video>
-      <canvas id="snapshot"></canvas>
-      <button class="btn-primary" onclick="startCamera()">Start Camera</button>
+      <div class="brand-title">
+        <h1>JADHAV ACADEMY</h1>
+        <p>Excellence in Education</p>
+      </div>
     </div>
 
-    <div class="card">
-      <h3>Face Verification</h3>
-      <button class="btn-success" style="font-size: 1.05rem; padding: 12px;" onclick="markAttendance()">Face ID Scan (Mark P)</button>
-      
-      <div class="status-box" id="statusMessage">Start camera and tap 'Face ID Scan' to verify attendance.</div>
+    <!-- Active Profile & Phone Edit Bar -->
+    <div id="userBadge" class="user-profile-badge hidden">
+      <span>Logged in: <strong id="currentPhoneDisplay"></strong></span>
+      <button class="btn-text" onclick="enablePhoneEdit()">Edit Number</button>
+      <button class="btn-text" style="color: #dc2626;" onclick="handleLogout()">Logout</button>
+    </div>
+  </header>
 
-      <hr style="margin: 16px 0; border: none; border-top: 1px solid #e5e7eb;">
+  <main>
+    <!-- View 1: Registered Phone Number Login & Edit -->
+    <section id="authView" class="card">
+      <h2 id="authHeading" style="font-size: 1.2rem; margin-bottom: 0.4rem;">Student Video Login</h2>
+      <p style="font-size: 0.85rem; color: var(--muted);" id="authSubtitle">Enter your registered mobile number to view batch lectures</p>
 
-      <h3>New Registration</h3>
       <div class="form-group">
-        <label for="studentId">Student ID</label>
-        <input type="text" id="studentId" placeholder="e.g. 101">
+        <label for="phoneInput">Registered Mobile Number</label>
+        <div class="phone-input-wrap">
+          <span>+91</span>
+          <input type="tel" id="phoneInput" placeholder="98XXXXXXXX" maxlength="10" />
+        </div>
       </div>
-      <div class="form-group">
-        <label for="studentName">Student Name</label>
-        <input type="text" id="studentName" placeholder="e.g. Nilesh">
+
+      <button id="submitPhoneBtn" class="btn-submit" onclick="submitPhoneNumber()">Enter Video Library</button>
+    </section>
+
+    <!-- View 2: Class-wise Video Dashboard -->
+    <section id="dashboardView" class="hidden">
+      <!-- Clickable Class Buttons -->
+      <div class="class-filter-bar">
+        <button class="btn-class active" onclick="filterClass('all', this)">All Batches</button>
+        <button class="btn-class" onclick="filterClass('10th', this)">Class 10th</button>
+        <button class="btn-class" onclick="filterClass('11th', this)">Class 11th</button>
+        <button class="btn-class" onclick="filterClass('12th', this)">Class 12th</button>
+        <button class="btn-class" onclick="filterClass('jee', this)">JEE Prep</button>
+        <button class="btn-class" onclick="filterClass('neet', this)">NEET Prep</button>
       </div>
-      <button class="btn-primary" onclick="registerStudent()">Register Face</button>
-    </div>
-  </div>
 
-  <div class="register-section">
-    <div class="register-header">
-      <div>
-        <h3 style="margin: 0;">Daily Attendance Register</h3>
-        <span style="font-size: 0.8rem; color: #6b7280;">Green: Present (P) | Red: Absent (A)</span>
+      <!-- Videos Grid -->
+      <div id="videoContainer" class="video-grid">
+        <!-- Videos will populate here via JavaScript -->
       </div>
-      <div class="date-control">
-        <label for="registerDate">Date:</label>
-        <input type="date" id="registerDate" onchange="fetchDailySheet()">
-        <button class="btn-neutral btn-inline" onclick="fetchDailySheet()">Refresh Roster</button>
-      </div>
-    </div>
+    </section>
+  </main>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Student ID</th>
-          <th>Student Name</th>
-          <th style="text-align: center;">Status</th>
-          <th>Punch In Time</th>
-        </tr>
-      </thead>
-      <tbody id="rosterTableBody">
-        <tr><td colspan="4" style="text-align: center;">Loading roster...</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+  <script>
+    // Sample Video Data (Replace video URLs with your YouTube/Drive/Vimeo embeds)
+    const videoData = [
+      { id: 1, title: "Class 10th - Quadratic Equations Masterclass", classId: "10th", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
+      { id: 2, title: "Class 11th - Kinematics & Laws of Motion", classId: "11th", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
+      { id: 3, title: "Class 12th - Electrostatics & Capacitance", classId: "12th", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
+      { id: 4, title: "JEE Advanced - Calculus Shortcuts & Problem Solving", classId: "jee", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
+      { id: 5, title: "NEET Biology - Human Physiology High-Yield Q&A", classId: "neet", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
+      { id: 6, title: "Class 10th - Chemical Reactions & Equations", classId: "10th", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" }
+    ];
 
-<script>
-  // Active backend URL
-  const BACKEND_URL = "https://fitted-dimensional-annual-drag.trycloudflare.com";
+    // State Variables
+    let userPhone = localStorage.getItem("jadhav_phone") || "";
+    let isEditing = false;
 
-  const video = document.getElementById("webcam");
-  const canvas = document.getElementById("snapshot");
-  const statusMessage = document.getElementById("statusMessage");
-  const dateInput = document.getElementById("registerDate");
+    // Initialize application
+    window.addEventListener("DOMContentLoaded", () => {
+      // Restore Logo if available
+      const savedLogo = localStorage.getItem("jadhav_logo");
+      if (savedLogo) applyLogo(savedLogo);
 
-  dateInput.value = new Date().toISOString().split("T")[0];
-
-  async function startCamera() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-      video.srcObject = stream;
-      statusMessage.textContent = "Camera connected.";
-    } catch (err) {
-      statusMessage.textContent = "Camera error: " + err.message;
-    }
-  }
-
-  function captureFrame() {
-    if (!video.srcObject) {
-      statusMessage.textContent = "Please start camera first.";
-      return null;
-    }
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
-    return canvas.toDataURL("image/jpeg");
-  }
-
-  async function registerStudent() {
-    const sId = document.getElementById("studentId").value.trim();
-    const sName = document.getElementById("studentName").value.trim();
-    const image = captureFrame();
-
-    if (!sId || !sName || !image) {
-      statusMessage.textContent = "Provide ID, Name, and start camera.";
-      return;
-    }
-
-    statusMessage.textContent = "Registering student...";
-    try {
-      const res = await fetch(`${BACKEND_URL}/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ student_id: sId, name: sName, image })
-      });
-      const data = await res.json();
-      statusMessage.textContent = data.message || JSON.stringify(data);
-      fetchDailySheet();
-    } catch (err) {
-      statusMessage.textContent = "Connection error: " + err.message;
-    }
-  }
-
-  async function markAttendance() {
-    const image = captureFrame();
-    if (!image) return;
-
-    statusMessage.textContent = "Scanning face...";
-    try {
-      const res = await fetch(`${BACKEND_URL}/verify`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image })
-      });
-      const data = await res.json();
-      statusMessage.textContent = data.message || JSON.stringify(data);
-      fetchDailySheet();
-    } catch (err) {
-      statusMessage.textContent = "Connection error: " + err.message;
-    }
-  }
-
-  async function fetchDailySheet() {
-    const selectedDate = dateInput.value;
-    try {
-      const res = await fetch(`${BACKEND_URL}/daily-sheet?date=${selectedDate}&_=${Date.now()}`);
-      if (!res.ok) {
-        throw new Error("HTTP " + res.status + " (" + res.statusText + ")");
+      // Check Login Status
+      if (userPhone) {
+        showDashboard();
+      } else {
+        showLoginView();
       }
-      const data = await res.json();
-      const tbody = document.getElementById("rosterTableBody");
-      tbody.innerHTML = "";
+    });
 
-      if (!data.roster || data.roster.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='4' style='text-align:center;'>No registered students found.</td></tr>";
+    // Logo Upload Handler
+    document.getElementById("logoInput").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const base64Img = evt.target.result;
+          localStorage.setItem("jadhav_logo", base64Img);
+          applyLogo(base64Img);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function applyLogo(src) {
+      const img = document.getElementById("logoPreview");
+      const placeholder = document.getElementById("logoPlaceholder");
+      img.src = src;
+      img.classList.remove("hidden");
+      placeholder.classList.add("hidden");
+    }
+
+    // Phone Validation and Submission
+    function submitPhoneNumber() {
+      const phoneVal = document.getElementById("phoneInput").value.trim();
+
+      if (!/^[6-9]\d{9}$/.test(phoneVal)) {
+        alert("Please enter a valid 10-digit Indian mobile number.");
         return;
       }
 
-      data.roster.forEach(st => {
-        const isPresent = st.status === 'P';
-        const badgeClass = isPresent ? 'badge-present' : 'badge-absent';
-        const row = `<tr>
-          <td><strong>${st.student_id}</strong></td>
-          <td>${st.name}</td>
-          <td style="text-align: center;"><span class="badge ${badgeClass}">${st.status}</span></td>
-          <td>${st.time}</td>
-        </tr>`;
-        tbody.innerHTML += row;
-      });
-    } catch (err) {
-      document.getElementById("rosterTableBody").innerHTML = `<tr><td colspan="4" style="color:red;text-align:center;">Failed to fetch roster: ${err.message}</td></tr>`;
+      userPhone = phoneVal;
+      localStorage.setItem("jadhav_phone", userPhone);
+      isEditing = false;
+      showDashboard();
     }
-  }
 
-  // Load the daily sheet immediately
-  fetchDailySheet();
-</script>
+    // Edit Phone Handler
+    function enablePhoneEdit() {
+      isEditing = true;
+      document.getElementById("authView").classList.remove("hidden");
+      document.getElementById("dashboardView").classList.add("hidden");
+      document.getElementById("authHeading").innerText = "Update Registered Phone Number";
+      document.getElementById("authSubtitle").innerText = "Enter your new 10-digit registered number below";
+      document.getElementById("submitPhoneBtn").innerText = "Save & Update Number";
+      document.getElementById("phoneInput").value = userPhone;
+      document.getElementById("phoneInput").focus();
+    }
 
+    // Logout
+    function handleLogout() {
+      localStorage.removeItem("jadhav_phone");
+      userPhone = "";
+      document.getElementById("phoneInput").value = "";
+      showLoginView();
+    }
+
+    // UI View Switches
+    function showDashboard() {
+      document.getElementById("authView").classList.add("hidden");
+      document.getElementById("dashboardView").classList.remove("hidden");
+      document.getElementById("userBadge").classList.remove("hidden");
+      document.getElementById("currentPhoneDisplay").innerText = "+91 " + userPhone;
+      renderVideos("all");
+    }
+
+    function showLoginView() {
+      document.getElementById("authView").classList.remove("hidden");
+      document.getElementById("dashboardView").classList.add("hidden");
+      document.getElementById("userBadge").classList.add("hidden");
+      document.getElementById("authHeading").innerText = "Student Video Login";
+      document.getElementById("authSubtitle").innerText = "Enter your registered mobile number to view batch lectures";
+      document.getElementById("submitPhoneBtn").innerText = "Enter Video Library";
+    }
+
+    // Class Filtering
+    function filterClass(classCategory, element) {
+      document.querySelectorAll(".btn-class").forEach(btn => btn.classList.remove("active"));
+      element.classList.add("active");
+      renderVideos(classCategory);
+    }
+
+    // Video Renderer
+    function renderVideos(filter) {
+      const container = document.getElementById("videoContainer");
+      container.innerHTML = "";
+
+      const filteredList = filter === "all" 
+        ? videoData 
+        : videoData.filter(v => v.classId === filter);
+
+      if (filteredList.length === 0) {
+        container.innerHTML = `<p style="grid-column: 1/-1; color: var(--muted); text-align: center; padding: 2rem;">No lectures uploaded yet for this class.</p>`;
+        return;
+      }
+
+      filteredList.forEach(vid => {
+        const card = document.createElement("div");
+        card.className = "video-card";
+        card.innerHTML = `
+          <div class="video-thumb">
+            <iframe src="${vid.embedUrl}" allowfullscreen loading="lazy"></iframe>
+          </div>
+          <div class="video-details">
+            <h3>${vid.title}</h3>
+            <span class="tag">${vid.classId.toUpperCase()}</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+  </script>
 </body>
 </html>
