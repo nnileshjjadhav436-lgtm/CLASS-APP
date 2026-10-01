@@ -1,656 +1,208 @@
-<!DOCTYPE html>
-<html lang="en">
+python -c '
+html = """<!DOCTYPE html>
+<html lang=\"en\">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jadhav Academy - Student Video Portal</title>
-  <style>
-    :root {
-      --primary: #1e3a8a;
-      --primary-light: #2563eb;
-      --accent: #f59e0b;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text: #1e293b;
-      --muted: #64748b;
-      --border: #cbd5e1;
-      --success: #16a34a;
-      --error: #dc2626;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Header */
-    header {
-      background: var(--card-bg);
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .brand-section {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .logo-container {
-      width: 52px;
-      height: 52px;
-      border-radius: 8px;
-      background: #eef2ff;
-      border: 1px dashed var(--primary-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      cursor: pointer;
-    }
-
-    .logo-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .logo-container span {
-      font-size: 0.65rem;
-      text-align: center;
-      color: var(--primary-light);
-      font-weight: 600;
-    }
-
-    #logoInput {
-      display: none;
-    }
-
-    .brand-title h1 {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--primary);
-      letter-spacing: 0.5px;
-    }
-
-    .brand-title p {
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-
-    .user-profile-badge {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      background: #eff6ff;
-      padding: 0.4rem 0.8rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      border: 1px solid #bfdbfe;
-    }
-
-    .btn-text {
-      background: none;
-      border: none;
-      color: var(--primary-light);
-      text-decoration: underline;
-      cursor: pointer;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-
-    main {
-      flex: 1;
-      max-width: 1100px;
-      width: 100%;
-      margin: 1.5rem auto;
-      padding: 0 1rem;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.75rem;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-    }
-
-    /* Auth Screens */
-    #authView {
-      max-width: 420px;
-      margin: 2.5rem auto;
-      text-align: center;
-    }
-
-    .simulation-banner {
-      background: #fef3c7;
-      border: 1px solid #fde68a;
-      color: #92400e;
-      padding: 0.65rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      margin-bottom: 1.25rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .simulation-banner strong {
-      font-size: 0.95rem;
-      letter-spacing: 1px;
-      color: #78350f;
-    }
-
-    .phone-input-wrap {
-      display: flex;
-      align-items: center;
-      border: 1.5px solid var(--border);
-      border-radius: 6px;
-      overflow: hidden;
-      background: #fff;
-      margin-top: 0.4rem;
-    }
-
-    .phone-input-wrap span {
-      background: #f1f5f9;
-      padding: 0.65rem 0.85rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--muted);
-      border-right: 1px solid var(--border);
-    }
-
-    .phone-input-wrap input {
-      flex: 1;
-      border: none;
-      outline: none;
-      padding: 0.65rem 0.75rem;
-      font-size: 1rem;
-    }
-
-    /* 4-Box OTP Input */
-    .otp-input-group {
-      display: flex;
-      justify-content: center;
-      gap: 0.75rem;
-      margin: 1.25rem 0;
-    }
-
-    .otp-digit {
-      width: 48px;
-      height: 52px;
-      text-align: center;
-      font-size: 1.3rem;
-      font-weight: 700;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .otp-digit:focus {
-      border-color: var(--primary-light);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-    }
-
-    .btn-submit {
-      width: 100%;
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 0.75rem;
-      border-radius: 6px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 0.95rem;
-      transition: background 0.2s;
-      margin-top: 0.5rem;
-    }
-
-    .btn-submit:hover {
-      background: var(--primary-light);
-    }
-
-    .auth-footer {
-      margin-top: 1rem;
-      font-size: 0.8rem;
-      color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    /* Video Dashboard */
-    .class-filter-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .btn-class {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 0.55rem 1.1rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-class.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.25rem;
-    }
-
-    .video-card {
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-      background: #fff;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .video-thumb {
-      position: relative;
-      padding-top: 56.25%;
-      background: #0f172a;
-    }
-
-    .video-thumb iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .video-details {
-      padding: 0.85rem;
-    }
-
-    .video-details h3 {
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 0.3rem;
-    }
-
-    .video-details .tag {
-      font-size: 0.7rem;
-      background: #dbeafe;
-      color: var(--primary-light);
-      padding: 0.15rem 0.45rem;
-      border-radius: 4px;
-      font-weight: 600;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-  </style>
+<meta charset=\"UTF-8\">
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+<title>Local Face Attendance & Videos</title>
+<style>
+  body { font-family: sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 16px; text-align: center; }
+  h2 { color: #38bdf8; margin-bottom: 8px; }
+  h3 { color: #cbd5e1; margin-top: 0; }
+  video, canvas { width: 100%; max-width: 380px; border-radius: 12px; background: #1e293b; border: 2px solid #334155; }
+  .box { background: #1e293b; border-radius: 12px; padding: 14px; margin: 14px auto; max-width: 400px; text-align: left; }
+  input, button { width: 100%; box-sizing: border-box; padding: 10px; margin: 6px 0; border-radius: 8px; border: none; font-size: 14px; }
+  input { background: #0f172a; color: #fff; border: 1px solid #475569; }
+  button { font-weight: bold; cursor: pointer; color: #fff; }
+  .btn-blue { background: #0284c7; }
+  .btn-green { background: #16a34a; font-size: 16px; padding: 12px; }
+  .btn-purple { background: #6366f1; }
+  .btn-amber { background: #d97706; }
+  .btn-red { background: #dc2626; padding: 6px 10px; width: auto; font-size: 12px; }
+  .btn-edit { background: #2563eb; padding: 6px 10px; width: auto; font-size: 12px; margin-right: 6px; }
+  #msg { font-weight: bold; margin: 10px 0; color: #facc15; text-align: center; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+  th, td { border: 1px solid #334155; padding: 6px; text-align: center; }
+  th { background: #334155; }
+  .P { color: #4ade80; font-weight: bold; }
+  .A { color: #f87171; font-weight: bold; }
+  .vid-item { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .vid-title { font-weight: bold; color: #38bdf8; word-break: break-word; }
+  .vid-actions { display: flex; gap: 4px; }
+</style>
 </head>
 <body>
+<h2>Smart Attendance & Content</h2>
+<div id=\"msg\">Tap Start Camera to begin</div>
+<video id=\"video\" autoplay playsinline></video>
+<canvas id=\"canvas\" style=\"display:none;\"></canvas>
 
-  <!-- Top Bar -->
-  <header>
-    <div class="brand-section">
-      <label for="logoInput" class="logo-container" title="Click to upload/change logo">
-        <img id="logoPreview" class="hidden" alt="Academy Logo" />
-        <span id="logoPlaceholder">+ Upload Logo</span>
-      </label>
-      <input type="file" id="logoInput" accept="image/*" />
+<div style=\"max-width:400px; margin:auto;\"><button class=\"btn-blue\" onclick=\"startCamera()\">Start Camera</button><button class=\"btn-green\" onclick=\"markAttendance()\">Face ID Scan (Mark P)</button></div>
 
-      <div class="brand-title">
-        <h1>JADHAV ACADEMY</h1>
-        <p>Excellence in Education</p>
-      </div>
-    </div>
+<div class=\"box\">
+  <h3>New Registration</h3>
+  <input id=\"stu_id\" placeholder=\"Student ID (e.g. 101)\">
+  <input id=\"stu_name\" placeholder=\"Student Name\">
+  <button class=\"btn-purple\" onclick=\"registerFace()\">Register Face</button>
+</div>
 
-    <div id="userBadge" class="user-profile-badge hidden">
-      <span>Logged in: <strong id="currentPhoneDisplay"></strong></span>
-      <button class="btn-text" onclick="startEditPhone()">Change Number</button>
-      <button class="btn-text" style="color: #dc2626;" onclick="handleLogout()">Logout</button>
-    </div>
-  </header>
+<div class=\"box\">
+  <h3>Daily Attendance Sheet</h3>
+  <button class=\"btn-blue\" style=\"background:#475569;\" onclick=\"loadRoster()\">Refresh Roster</button>
+  <table>
+    <thead><tr><th>ID</th><th>Name</th><th>Status</th><th>Time</th></tr></thead>
+    <tbody id=\"roster\"></tbody>
+  </table>
+</div>
 
-  <main>
-    <!-- Authentication Card -->
-    <section id="authView" class="card">
-      <!-- Simulated SMS Toast (for testing) -->
-      <div id="simulatedToast" class="simulation-banner hidden">
-        <span>SMS Simulation Code: <strong id="simCodeDisplay">0000</strong></span>
-        <button class="btn-text" onclick="autoFillOtp()" style="color: #78350f;">Auto-Fill</button>
-      </div>
+<div class=\"box\">
+  <h3>Video Manager</h3>
+  <input id=\"vid_title\" placeholder=\"Video Title (e.g. Lecture 1 / Play Intro)\">
+  <input id=\"vid_url\" placeholder=\"Video URL or Local File Path\">
+  <button id=\"vid_btn\" class=\"btn-amber\" onclick=\"saveVideo()\">Add New Video</button>
+  <button id=\"vid_cancel\" style=\"display:none; background:#64748b;\" onclick=\"resetVideoForm()\">Cancel Edit</button>
 
-      <!-- Step 1: Phone Entry -->
-      <div id="phoneStep">
-        <h2 id="authHeading" style="font-size: 1.25rem; margin-bottom: 0.3rem;">Student Portal Login</h2>
-        <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 1.25rem;">Enter your registered 10-digit mobile number</p>
+  <div id=\"video_list\" style=\"margin-top: 14px;\"></div>
+</div>
 
-        <div style="text-align: left; margin-bottom: 1.25rem;">
-          <label for="phoneInput" style="font-size: 0.85rem; font-weight: 600; color: var(--muted);">Mobile Number</label>
-          <div class="phone-input-wrap">
-            <span>+91</span>
-            <input type="tel" id="phoneInput" placeholder="98XXXXXXXX" maxlength="10" />
-          </div>
-        </div>
+<script>
+const video = document.getElementById(\"video\");
+const canvas = document.getElementById(\"canvas\");
+const msg = document.getElementById(\"msg\");
+let editVideoId = null;
 
-        <button class="btn-submit" onclick="sendOtp()">Send OTP</button>
-      </div>
+async function startCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: \"user\" } });
+    video.srcObject = stream;
+    msg.innerText = \"Camera active!\";
+  } catch (err) {
+    msg.innerText = \"Camera Error: \" + err.message;
+  }
+}
 
-      <!-- Step 2: OTP Verification -->
-      <div id="otpStep" class="hidden">
-        <h2 style="font-size: 1.25rem; margin-bottom: 0.3rem;">Verify OTP</h2>
-        <p style="font-size: 0.85rem; color: var(--muted);">
-          Code sent to +91 <span id="targetPhoneDisplay" style="font-weight: 600; color: var(--text);"></span>
-        </p>
+function captureFrame() {
+  canvas.width = video.videoWidth || 320;
+  canvas.height = video.videoHeight || 240;
+  canvas.getContext(\"2d\").drawImage(video, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL(\"image/jpeg\", 0.8);
+}
 
-        <div class="otp-input-group">
-          <input type="text" class="otp-digit" maxlength="1" id="otp1" />
-          <input type="text" class="otp-digit" maxlength="1" id="otp2" />
-          <input type="text" class="otp-digit" maxlength="1" id="otp3" />
-          <input type="text" class="otp-digit" maxlength="1" id="otp4" />
-        </div>
+async function registerFace() {
+  const id = document.getElementById(\"stu_id\").value.trim();
+  const name = document.getElementById(\"stu_name\").value.trim();
+  if (!id || !name) return alert(\"Enter ID and Name!\");
+  msg.innerText = \"Registering face...\";
+  const res = await fetch(\"/register\", {
+    method: \"POST\",
+    headers: {\"Content-Type\": \"application/json\"},
+    body: JSON.stringify({ student_id: id, name: name, image: captureFrame() })
+  });
+  const data = await res.json();
+  msg.innerText = data.message || \"Registered!\";
+  loadRoster();
+}
 
-        <button class="btn-submit" onclick="verifyOtp()">Verify & Proceed</button>
+async function markAttendance() {
+  msg.innerText = \"Scanning face...\";
+  const res = await fetch(\"/verify\", {
+    method: \"POST\",
+    headers: {\"Content-Type\": \"application/json\"},
+    body: JSON.stringify({ image: captureFrame() })
+  });
+  const data = await res.json();
+  msg.innerText = data.message || \"Scan complete!\";
+  loadRoster();
+}
 
-        <div class="auth-footer">
-          <button class="btn-text" onclick="backToPhone()">Change Number</button>
-          <span id="timerText">Resend in <strong id="countdown">30</strong>s</span>
-          <button id="resendBtn" class="btn-text hidden" onclick="sendOtp(true)">Resend OTP</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Step 3: Class-wise Video Dashboard -->
-    <section id="dashboardView" class="hidden">
-      <div class="class-filter-bar">
-        <button class="btn-class active" onclick="filterClass('all', this)">All Batches</button>
-        <button class="btn-class" onclick="filterClass('10th', this)">Class 10th</button>
-        <button class="btn-class" onclick="filterClass('11th', this)">Class 11th</button>
-        <button class="btn-class" onclick="filterClass('12th', this)">Class 12th</button>
-        <button class="btn-class" onclick="filterClass('jee', this)">JEE Prep</button>
-        <button class="btn-class" onclick="filterClass('neet', this)">NEET Prep</button>
-      </div>
-
-      <div id="videoContainer" class="video-grid"></div>
-    </section>
-  </main>
-
-  <script>
-    // Sample Video Lectures
-    const videoData = [
-      { id: 1, title: "Class 10th - Quadratic Equations", classId: "10th", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
-      { id: 2, title: "Class 11th - Kinematics & Motion Laws", classId: "11th", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
-      { id: 3, title: "Class 12th - Electrostatics & Potential", classId: "12th", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
-      { id: 4, title: "JEE Advanced - Calculus Shortcuts", classId: "jee", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
-      { id: 5, title: "NEET Biology - Human Physiology Q&A", classId: "neet", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" }
-    ];
-
-    let userPhone = localStorage.getItem("jadhav_phone") || "";
-    let generatedOtp = "";
-    let timerInterval = null;
-    let tempTargetPhone = "";
-
-    window.addEventListener("DOMContentLoaded", () => {
-      // Restore Logo
-      const savedLogo = localStorage.getItem("jadhav_logo");
-      if (savedLogo) applyLogo(savedLogo);
-
-      // Check session
-      if (userPhone) {
-        showDashboard();
-      } else {
-        showLoginView();
-      }
-
-      setupOtpInputHandlers();
+async function loadRoster() {
+  try {
+    const res = await fetch(\"/daily-sheet\");
+    const data = await res.json();
+    const tbody = document.getElementById(\"roster\");
+    tbody.innerHTML = \"\";
+    (data.roster || []).forEach(r => {
+      tbody.innerHTML += `<tr><td>${r.student_id}</td><td>${r.name}</td><td class=\"${r.status}\">${r.status}</td><td>${r.time}</td></tr>`;
     });
+  } catch(e) {}
+}
 
-    // Logo Upload Logic
-    document.getElementById("logoInput").addEventListener("change", function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          const b64 = evt.target.result;
-          localStorage.setItem("jadhav_logo", b64);
-          applyLogo(b64);
-        };
-        reader.readAsDataURL(file);
-      }
+async function loadVideos() {
+  try {
+    const res = await fetch(\"/videos\");
+    const list = await res.json();
+    const container = document.getElementById(\"video_list\");
+    container.innerHTML = \"\";
+    if (list.length === 0) {
+      container.innerHTML = \"<p style='color:#94a3b8; font-size:13px;'>No videos added yet.</p>\";
+      return;
+    }
+    list.forEach(v => {
+      container.innerHTML += `
+        <div class=\"vid-item\">
+          <div>
+            <div class=\"vid-title\">${v.title}</div>
+            <a href=\"${v.url}\" target=\"_blank\" style=\"color:#94a3b8; font-size:12px;\">Open link</a>
+          </div>
+          <div class=\"vid-actions\">
+            <button class=\"btn-edit\" onclick=\"startEditVideo(\x27${v.id}\x27, \x27${escape(v.title)}\x27, \x27${escape(v.url)}\x27)\">Edit</button>
+            <button class=\"btn-red\" onclick=\"deleteVideo(\x27${v.id}\x27)\">Delete</button>
+          </div>
+        </div>
+      `;
     });
+  } catch(e) {}
+}
 
-    function applyLogo(src) {
-      const img = document.getElementById("logoPreview");
-      img.src = src;
-      img.classList.remove("hidden");
-      document.getElementById("logoPlaceholder").classList.add("hidden");
-    }
+async function saveVideo() {
+  const title = document.getElementById(\"vid_title\").value.trim();
+  const url = document.getElementById(\"vid_url\").value.trim();
+  if (!title || !url) return alert(\"Enter both video title and URL!\");
 
-    // Step 1: Send OTP (Simulation + Gateway Hook)
-    async function sendOtp(isResend = false) {
-      const inputVal = document.getElementById("phoneInput").value.trim();
-      if (!/^[6-9]\d{9}$/.test(inputVal)) {
-        alert("Please enter a valid 10-digit Indian mobile number.");
-        return;
-      }
+  const endpoint = editVideoId ? \"/videos/edit\" : \"/videos/add\";
+  const payload = editVideoId ? { id: editVideoId, title, url } : { title, url };
 
-      tempTargetPhone = inputVal;
+  await fetch(endpoint, {
+    method: \"POST\",
+    headers: {\"Content-Type\": \"application/json\"},
+    body: JSON.stringify(payload)
+  });
 
-      // 1. Generate 4-digit code
-      generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+  resetVideoForm();
+  loadVideos();
+}
 
-      /* 
-       * PRODUCTION SMS GATEWAY (e.g., Fast2SMS / Twilio backend call):
-       * await fetch('/api/send-otp', {
-       *    method: 'POST',
-       *    headers: { 'Content-Type': 'application/json' },
-       *    body: JSON.stringify({ phone: tempTargetPhone, otp: generatedOtp })
-       * });
-       */
+function startEditVideo(id, encTitle, encUrl) {
+  editVideoId = id;
+  document.getElementById(\"vid_title\").value = unescape(encTitle);
+  document.getElementById(\"vid_url\").value = unescape(encUrl);
+  document.getElementById(\"vid_btn\").innerText = \"Save Video Changes\";
+  document.getElementById(\"vid_cancel\").style.display = \"block\";
+}
 
-      // Simulation Toast Display
-      const toast = document.getElementById("simulatedToast");
-      document.getElementById("simCodeDisplay").innerText = generatedOtp;
-      toast.classList.remove("hidden");
+function resetVideoForm() {
+  editVideoId = null;
+  document.getElementById(\"vid_title\").value = \"\";
+  document.getElementById(\"vid_url\").value = \"\";
+  document.getElementById(\"vid_btn\").innerText = \"Add New Video\";
+  document.getElementById(\"vid_cancel\").style.display = \"none\";
+}
 
-      // Switch views to OTP input
-      document.getElementById("phoneStep").classList.add("hidden");
-      document.getElementById("otpStep").classList.remove("hidden");
-      document.getElementById("targetPhoneDisplay").innerText = tempTargetPhone;
+async function deleteVideo(id) {
+  if (!confirm(\"Are you sure you want to delete this video?\")) return;
+  await fetch(\"/videos/delete\", {
+    method: \"POST\",
+    headers: {\"Content-Type\": \"application/json\"},
+    body: JSON.stringify({ id: id })
+  });
+  loadVideos();
+}
 
-      clearOtpBoxes();
-      document.getElementById("otp1").focus();
-      startTimer();
-    }
-
-    // Step 2: Verify OTP
-    function verifyOtp() {
-      const enteredOtp = 
-        document.getElementById("otp1").value +
-        document.getElementById("otp2").value +
-        document.getElementById("otp3").value +
-        document.getElementById("otp4").value;
-
-      if (enteredOtp.length < 4) {
-        alert("Please enter the complete 4-digit OTP.");
-        return;
-      }
-
-      if (enteredOtp === generatedOtp) {
-        userPhone = tempTargetPhone;
-        localStorage.setItem("jadhav_phone", userPhone);
-        clearInterval(timerInterval);
-        document.getElementById("simulatedToast").classList.add("hidden");
-        showDashboard();
-      } else {
-        alert("Incorrect OTP. Please check the code and try again.");
-        clearOtpBoxes();
-        document.getElementById("otp1").focus();
-      }
-    }
-
-    function autoFillOtp() {
-      if (!generatedOtp) return;
-      document.getElementById("otp1").value = generatedOtp[0];
-      document.getElementById("otp2").value = generatedOtp[1];
-      document.getElementById("otp3").value = generatedOtp[2];
-      document.getElementById("otp4").value = generatedOtp[3];
-      document.getElementById("otp4").focus();
-    }
-
-    // Digit Box Key Handling (Auto-tab and backspace)
-    function setupOtpInputHandlers() {
-      const boxes = [
-        document.getElementById("otp1"),
-        document.getElementById("otp2"),
-        document.getElementById("otp3"),
-        document.getElementById("otp4")
-      ];
-
-      boxes.forEach((box, idx) => {
-        box.addEventListener("input", (e) => {
-          if (box.value && idx < 3) {
-            boxes[idx + 1].focus();
-          }
-        });
-        box.addEventListener("keydown", (e) => {
-          if (e.key === "Backspace" && !box.value && idx > 0) {
-            boxes[idx - 1].focus();
-          }
-        });
-      });
-    }
-
-    function clearOtpBoxes() {
-      ["otp1", "otp2", "otp3", "otp4"].forEach(id => {
-        document.getElementById(id).value = "";
-      });
-    }
-
-    // Countdown Timer for Resend
-    function startTimer() {
-      clearInterval(timerInterval);
-      let timeLeft = 30;
-      const countdownEl = document.getElementById("countdown");
-      const timerText = document.getElementById("timerText");
-      const resendBtn = document.getElementById("resendBtn");
-
-      timerText.classList.remove("hidden");
-      resendBtn.classList.add("hidden");
-      countdownEl.innerText = timeLeft;
-
-      timerInterval = setInterval(() => {
-        timeLeft--;
-        countdownEl.innerText = timeLeft;
-        if (timeLeft <= 0) {
-          clearInterval(timerInterval);
-          timerText.classList.add("hidden");
-          resendBtn.classList.remove("hidden");
-        }
-      }, 1000);
-    }
-
-    function backToPhone() {
-      clearInterval(timerInterval);
-      document.getElementById("otpStep").classList.add("hidden");
-      document.getElementById("phoneStep").classList.remove("hidden");
-      document.getElementById("simulatedToast").classList.add("hidden");
-    }
-
-    function startEditPhone() {
-      document.getElementById("dashboardView").classList.add("hidden");
-      document.getElementById("authView").classList.remove("hidden");
-      document.getElementById("phoneStep").classList.remove("hidden");
-      document.getElementById("otpStep").classList.add("hidden");
-      document.getElementById("phoneInput").value = userPhone;
-      document.getElementById("authHeading").innerText = "Update Registered Number";
-      document.getElementById("phoneInput").focus();
-    }
-
-    function handleLogout() {
-      localStorage.removeItem("jadhav_phone");
-      userPhone = "";
-      document.getElementById("phoneInput").value = "";
-      document.getElementById("authHeading").innerText = "Student Portal Login";
-      showLoginView();
-    }
-
-    function showDashboard() {
-      document.getElementById("authView").classList.add("hidden");
-      document.getElementById("dashboardView").classList.remove("hidden");
-      document.getElementById("userBadge").classList.remove("hidden");
-      document.getElementById("currentPhoneDisplay").innerText = "+91 " + userPhone;
-      renderVideos("all");
-    }
-
-    function showLoginView() {
-      document.getElementById("authView").classList.remove("hidden");
-      document.getElementById("dashboardView").classList.add("hidden");
-      document.getElementById("userBadge").classList.add("hidden");
-      document.getElementById("phoneStep").classList.remove("hidden");
-      document.getElementById("otpStep").classList.add("hidden");
-    }
-
-    // Class Filter
-    function filterClass(cat, el) {
-      document.querySelectorAll(".btn-class").forEach(b => b.classList.remove("active"));
-      el.classList.add("active");
-      renderVideos(cat);
-    }
-
-    function renderVideos(filter) {
-      const container = document.getElementById("videoContainer");
-      container.innerHTML = "";
-
-      const list = filter === "all" ? videoData : videoData.filter(v => v.classId === filter);
-      if (list.length === 0) {
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--muted); padding: 2rem;">No lectures uploaded for this category.</p>`;
-        return;
-      }
-
-      list.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "video-card";
-        card.innerHTML = `
-          <div class="video-thumb">
-            <iframe src="${item.embedUrl}" allowfullscreen loading="lazy"></iframe>
-          </div>
-          <div class="video-details">
-            <h3>${item.title}</h3>
-            <span class="tag">${item.classId.toUpperCase()}</span>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-  </script>
+window.onload = () => { loadRoster(); loadVideos(); };
+</script>
 </body>
 </html>
+"""
+open("index.html", "w").write(html)
+print("index.html successfully updated with video controls!")
+'
