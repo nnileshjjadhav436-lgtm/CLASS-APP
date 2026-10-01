@@ -21,20 +21,44 @@
       max-width: 900px;
       width: 100%;
       background: #ffffff;
-      padding: 24px;
+      padding: 20px;
       border-radius: 12px;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
     h1 {
-      margin: 0 0 16px 0;
+      margin: 0 0 12px 0;
       font-size: 1.4rem;
       text-align: center;
       color: #111827;
     }
+    .config-box {
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .config-box label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #3730a3;
+    }
+    .config-box input {
+      flex: 1;
+      min-width: 240px;
+      padding: 8px;
+      border: 1px solid #a5b4fc;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 16px;
     }
     @media (max-width: 768px) {
       .grid {
@@ -54,7 +78,7 @@
       transform: scaleX(-1);
     }
     canvas { display: none; }
-    .form-group { margin-bottom: 12px; }
+    .form-group { margin-bottom: 10px; }
     label {
       display: block;
       font-size: 0.85rem;
@@ -80,8 +104,11 @@
       margin-top: 6px;
     }
     .btn-primary { background-color: #2563eb; color: #fff; }
+    .btn-primary:hover { background-color: #1d4ed8; }
     .btn-success { background-color: #16a34a; color: #fff; }
-    .btn-refresh { background-color: #4b5563; color: #fff; width: auto; padding: 6px 14px; }
+    .btn-success:hover { background-color: #15803d; }
+    .btn-neutral { background-color: #4b5563; color: #fff; }
+    .btn-inline { width: auto; padding: 8px 14px; margin-top: 0; }
     
     .status-box {
       margin-top: 12px;
@@ -105,7 +132,7 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .date-control {
       display: flex;
@@ -149,6 +176,13 @@
 <div class="container">
   <h1>Class Attendance System</h1>
 
+  <!-- Backend Tunnel URL Config -->
+  <div class="config-box">
+    <label for="tunnelUrl">Cloudflare URL:</label>
+    <input type="text" id="tunnelUrl" placeholder="https://xxxx.trycloudflare.com">
+    <button class="btn-primary btn-inline" onclick="saveBackendUrl()">Save URL</button>
+  </div>
+
   <div class="grid">
     <div class="card">
       <video id="webcam" autoplay playsinline></video>
@@ -157,10 +191,10 @@
     </div>
 
     <div class="card">
-      <h3>Student Verification</h3>
+      <h3>Face Verification</h3>
       <button class="btn-success" style="font-size: 1.05rem; padding: 12px;" onclick="markAttendance()">Face ID Scan (Mark P)</button>
       
-      <div class="status-box" id="statusMessage">Start camera and tap 'Face ID Scan' to record attendance.</div>
+      <div class="status-box" id="statusMessage">Start camera and tap 'Face ID Scan' to verify attendance.</div>
 
       <hr style="margin: 16px 0; border: none; border-top: 1px solid #e5e7eb;">
 
@@ -177,6 +211,7 @@
     </div>
   </div>
 
+  <!-- Attendance Register Table -->
   <div class="register-section">
     <div class="register-header">
       <div>
@@ -186,7 +221,7 @@
       <div class="date-control">
         <label for="registerDate">Date:</label>
         <input type="date" id="registerDate" onchange="fetchDailySheet()">
-        <button class="btn-refresh" onclick="fetchDailySheet()">Refresh Roster</button>
+        <button class="btn-neutral btn-inline" onclick="fetchDailySheet()">Refresh</button>
       </div>
     </div>
 
@@ -207,13 +242,31 @@
 </div>
 
 <script>
-  const BACKEND_URL = "https://customized-treasury-magazines-debug.trycloudflare.com";
+  const DEFAULT_BACKEND = "https://customized-treasury-magazines-debug.trycloudflare.com";
+  const urlInput = document.getElementById("tunnelUrl");
   const video = document.getElementById("webcam");
   const canvas = document.getElementById("snapshot");
   const statusMessage = document.getElementById("statusMessage");
   const dateInput = document.getElementById("registerDate");
 
+  // Load backend URL from localStorage or fall back to default
+  let backendUrl = localStorage.getItem("att_backend_url") || DEFAULT_BACKEND;
+  urlInput.value = backendUrl;
+
+  // Set default date to today
   dateInput.value = new Date().toISOString().split("T")[0];
+
+  function saveBackendUrl() {
+    let inputVal = urlInput.value.trim().replace(/\/+$/, "");
+    if (!inputVal.startsWith("http")) {
+      inputVal = "https://" + inputVal;
+    }
+    backendUrl = inputVal;
+    urlInput.value = backendUrl;
+    localStorage.setItem("att_backend_url", backendUrl);
+    statusMessage.textContent = "Backend URL updated to: " + backendUrl;
+    fetchDailySheet();
+  }
 
   async function startCamera() {
     try {
@@ -248,13 +301,13 @@
 
     statusMessage.textContent = "Registering student...";
     try {
-      const res = await fetch(`${BACKEND_URL}/register`, {
+      const res = await fetch(`${backendUrl}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ student_id: sId, name: sName, image })
       });
       const data = await res.json();
-      statusMessage.textContent = data.message;
+      statusMessage.textContent = data.message || JSON.stringify(data);
       fetchDailySheet();
     } catch (err) {
       statusMessage.textContent = "Connection error: " + err.message;
@@ -267,13 +320,13 @@
 
     statusMessage.textContent = "Scanning face...";
     try {
-      const res = await fetch(`${BACKEND_URL}/verify`, {
+      const res = await fetch(`${backendUrl}/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image })
       });
       const data = await res.json();
-      statusMessage.textContent = data.message;
+      statusMessage.textContent = data.message || JSON.stringify(data);
       fetchDailySheet();
     } catch (err) {
       statusMessage.textContent = "Connection error: " + err.message;
@@ -283,7 +336,10 @@
   async function fetchDailySheet() {
     const selectedDate = dateInput.value;
     try {
-      const res = await fetch(`${BACKEND_URL}/daily-sheet?date=${selectedDate}&t=${Date.now()}`);
+      const res = await fetch(`${backendUrl}/daily-sheet?date=${selectedDate}&_=${Date.now()}`);
+      if (!res.ok) {
+        throw new Error("HTTP " + res.status + " (" + res.statusText + ")");
+      }
       const data = await res.json();
       const tbody = document.getElementById("rosterTableBody");
       tbody.innerHTML = "";
@@ -309,6 +365,7 @@
     }
   }
 
+  // Initial load
   fetchDailySheet();
 </script>
 
