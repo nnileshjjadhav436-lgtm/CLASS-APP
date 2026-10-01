@@ -27,7 +27,7 @@
     }
     h1 {
       margin: 0 0 16px 0;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       text-align: center;
       color: #111827;
     }
@@ -91,9 +91,9 @@
       background: #e5e7eb;
       color: #1f2937;
       min-height: 40px;
+      white-space: pre-wrap;
     }
 
-    /* Attendance Register Table */
     .register-section {
       margin-top: 24px;
       border-top: 2px solid #e5e7eb;
@@ -140,12 +140,8 @@
       font-weight: 700;
       color: white;
     }
-    .badge-present {
-      background-color: #16a34a; /* Green for P */
-    }
-    .badge-absent {
-      background-color: #dc2626; /* Red for A */
-    }
+    .badge-present { background-color: #16a34a; }
+    .badge-absent { background-color: #dc2626; }
   </style>
 </head>
 <body>
@@ -181,7 +177,6 @@
     </div>
   </div>
 
-  <!-- Daily Register Section -->
   <div class="register-section">
     <div class="register-header">
       <div>
@@ -191,7 +186,7 @@
       <div class="date-control">
         <label for="registerDate">Date:</label>
         <input type="date" id="registerDate" onchange="fetchDailySheet()">
-        <button class="btn-refresh" onclick="fetchDailySheet()">Refresh</button>
+        <button class="btn-refresh" onclick="fetchDailySheet()">Refresh Roster</button>
       </div>
     </div>
 
@@ -218,7 +213,6 @@
   const statusMessage = document.getElementById("statusMessage");
   const dateInput = document.getElementById("registerDate");
 
-  // Set default picker to today's date
   dateInput.value = new Date().toISOString().split("T")[0];
 
   async function startCamera() {
@@ -289,7 +283,7 @@
   async function fetchDailySheet() {
     const selectedDate = dateInput.value;
     try {
-      const res = await fetch(`${BACKEND_URL}/daily-sheet?date=${selectedDate}`);
+      const res = await fetch(`${BACKEND_URL}/daily-sheet?date=${selectedDate}&t=${Date.now()}`);
       const data = await res.json();
       const tbody = document.getElementById("rosterTableBody");
       tbody.innerHTML = "";
@@ -311,11 +305,10 @@
         tbody.innerHTML += row;
       });
     } catch (err) {
-      console.error(err);
+      document.getElementById("rosterTableBody").innerHTML = `<tr><td colspan="4" style="color:red;text-align:center;">Failed to fetch roster: ${err.message}</td></tr>`;
     }
   }
 
-  // Load the daily register on page open
   fetchDailySheet();
 </script>
 
