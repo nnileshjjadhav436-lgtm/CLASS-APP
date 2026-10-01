@@ -12,7 +12,7 @@
     body {
       background-color: #f3f4f6;
       margin: 0;
-      padding: 24px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -26,7 +26,7 @@
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     }
     h1 {
-      margin-top: 0;
+      margin: 0 0 16px 0;
       font-size: 1.5rem;
       text-align: center;
       color: #111827;
@@ -34,15 +34,14 @@
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-top: 20px;
+      gap: 20px;
     }
     @media (max-width: 768px) {
       .grid {
         grid-template-columns: 1fr;
       }
     }
-    .video-card, .action-card {
+    .card {
       border: 1px solid #e5e7eb;
       border-radius: 8px;
       padding: 16px;
@@ -54,15 +53,11 @@
       background: #000;
       transform: scaleX(-1);
     }
-    canvas {
-      display: none;
-    }
-    .form-group {
-      margin-bottom: 12px;
-    }
+    canvas { display: none; }
+    .form-group { margin-bottom: 12px; }
     label {
       display: block;
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       font-weight: 600;
       color: #374151;
       margin-bottom: 4px;
@@ -82,65 +77,137 @@
       font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
-      margin-top: 8px;
+      margin-top: 6px;
     }
-    .btn-primary {
-      background-color: #2563eb;
-      color: #ffffff;
-    }
-    .btn-primary:hover {
-      background-color: #1d4ed8;
-    }
-    .btn-success {
-      background-color: #16a34a;
-      color: #ffffff;
-    }
-    .btn-success:hover {
-      background-color: #15803d;
-    }
+    .btn-primary { background-color: #2563eb; color: #fff; }
+    .btn-success { background-color: #16a34a; color: #fff; }
+    .btn-refresh { background-color: #4b5563; color: #fff; width: auto; padding: 6px 14px; }
+    
     .status-box {
-      margin-top: 16px;
-      padding: 12px;
+      margin-top: 12px;
+      padding: 10px;
       border-radius: 6px;
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       background: #e5e7eb;
       color: #1f2937;
-      min-height: 48px;
-      white-space: pre-wrap;
+      min-height: 40px;
+    }
+
+    /* Attendance Register Table */
+    .register-section {
+      margin-top: 24px;
+      border-top: 2px solid #e5e7eb;
+      padding-top: 16px;
+    }
+    .register-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .date-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .date-control input {
+      width: auto;
+      padding: 6px 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th, td {
+      border: 1px solid #e5e7eb;
+      padding: 10px 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #f9fafb;
+      font-weight: 600;
+    }
+    .badge {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+      border-radius: 50%;
+      text-align: center;
+      font-weight: 700;
+      color: white;
+    }
+    .badge-present {
+      background-color: #16a34a; /* Green for P */
+    }
+    .badge-absent {
+      background-color: #dc2626; /* Red for A */
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>Face ID Attendance Portal</h1>
+  <h1>Class Attendance System</h1>
 
   <div class="grid">
-    <div class="video-card">
+    <div class="card">
       <video id="webcam" autoplay playsinline></video>
       <canvas id="snapshot"></canvas>
       <button class="btn-primary" onclick="startCamera()">Start Camera</button>
     </div>
 
-    <div class="action-card">
-      <h3>Register Student</h3>
+    <div class="card">
+      <h3>Student Verification</h3>
+      <button class="btn-success" style="font-size: 1.05rem; padding: 12px;" onclick="markAttendance()">Face ID Scan (Mark P)</button>
+      
+      <div class="status-box" id="statusMessage">Start camera and tap 'Face ID Scan' to record attendance.</div>
+
+      <hr style="margin: 16px 0; border: none; border-top: 1px solid #e5e7eb;">
+
+      <h3>New Registration</h3>
       <div class="form-group">
         <label for="studentId">Student ID</label>
         <input type="text" id="studentId" placeholder="e.g. 101">
       </div>
       <div class="form-group">
         <label for="studentName">Student Name</label>
-        <input type="text" id="studentName" placeholder="e.g. Nilesh Jadhav">
+        <input type="text" id="studentName" placeholder="e.g. Nilesh">
       </div>
       <button class="btn-primary" onclick="registerStudent()">Register Face</button>
-
-      <hr style="margin: 20px 0; border: none; border-top: 1px solid #e5e7eb;">
-
-      <h3>Mark Attendance</h3>
-      <button class="btn-success" onclick="markAttendance()">Verify & Log Attendance</button>
-
-      <div class="status-box" id="statusMessage">System ready. Click 'Start Camera' to begin.</div>
     </div>
+  </div>
+
+  <!-- Daily Register Section -->
+  <div class="register-section">
+    <div class="register-header">
+      <div>
+        <h3 style="margin: 0;">Daily Attendance Register</h3>
+        <span style="font-size: 0.8rem; color: #6b7280;">Green: Present (P) | Red: Absent (A)</span>
+      </div>
+      <div class="date-control">
+        <label for="registerDate">Date:</label>
+        <input type="date" id="registerDate" onchange="fetchDailySheet()">
+        <button class="btn-refresh" onclick="fetchDailySheet()">Refresh</button>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Student ID</th>
+          <th>Student Name</th>
+          <th style="text-align: center;">Status</th>
+          <th>Punch In Time</th>
+        </tr>
+      </thead>
+      <tbody id="rosterTableBody">
+        <tr><td colspan="4" style="text-align: center;">Loading roster...</td></tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
@@ -149,79 +216,107 @@
   const video = document.getElementById("webcam");
   const canvas = document.getElementById("snapshot");
   const statusMessage = document.getElementById("statusMessage");
+  const dateInput = document.getElementById("registerDate");
+
+  // Set default picker to today's date
+  dateInput.value = new Date().toISOString().split("T")[0];
 
   async function startCamera() {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user" }
-      });
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
       video.srcObject = stream;
-      statusMessage.textContent = "Camera connected successfully.";
+      statusMessage.textContent = "Camera connected.";
     } catch (err) {
-      statusMessage.textContent = "Camera access denied: " + err.message;
+      statusMessage.textContent = "Camera error: " + err.message;
     }
   }
 
   function captureFrame() {
     if (!video.srcObject) {
-      statusMessage.textContent = "Error: Please start the camera first.";
+      statusMessage.textContent = "Please start camera first.";
       return null;
     }
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
     return canvas.toDataURL("image/jpeg");
   }
 
   async function registerStudent() {
-    const studentId = document.getElementById("studentId").value.trim();
-    const studentName = document.getElementById("studentName").value.trim();
-    const imageData = captureFrame();
+    const sId = document.getElementById("studentId").value.trim();
+    const sName = document.getElementById("studentName").value.trim();
+    const image = captureFrame();
 
-    if (!studentId || !studentName) {
-      statusMessage.textContent = "Error: Student ID and Name are required.";
+    if (!sId || !sName || !image) {
+      statusMessage.textContent = "Provide ID, Name, and start camera.";
       return;
     }
-    if (!imageData) return;
 
     statusMessage.textContent = "Registering student...";
-
     try {
       const res = await fetch(`${BACKEND_URL}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          student_id: studentId,
-          name: studentName,
-          image: imageData
-        })
+        body: JSON.stringify({ student_id: sId, name: sName, image })
       });
       const data = await res.json();
-      statusMessage.textContent = JSON.stringify(data, null, 2);
+      statusMessage.textContent = data.message;
+      fetchDailySheet();
     } catch (err) {
       statusMessage.textContent = "Connection error: " + err.message;
     }
   }
 
   async function markAttendance() {
-    const imageData = captureFrame();
-    if (!imageData) return;
+    const image = captureFrame();
+    if (!image) return;
 
-    statusMessage.textContent = "Verifying face...";
-
+    statusMessage.textContent = "Scanning face...";
     try {
       const res = await fetch(`${BACKEND_URL}/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: imageData })
+        body: JSON.stringify({ image })
       });
       const data = await res.json();
-      statusMessage.textContent = JSON.stringify(data, null, 2);
+      statusMessage.textContent = data.message;
+      fetchDailySheet();
     } catch (err) {
       statusMessage.textContent = "Connection error: " + err.message;
     }
   }
+
+  async function fetchDailySheet() {
+    const selectedDate = dateInput.value;
+    try {
+      const res = await fetch(`${BACKEND_URL}/daily-sheet?date=${selectedDate}`);
+      const data = await res.json();
+      const tbody = document.getElementById("rosterTableBody");
+      tbody.innerHTML = "";
+
+      if (!data.roster || data.roster.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='4' style='text-align:center;'>No registered students found.</td></tr>";
+        return;
+      }
+
+      data.roster.forEach(st => {
+        const isPresent = st.status === 'P';
+        const badgeClass = isPresent ? 'badge-present' : 'badge-absent';
+        const row = `<tr>
+          <td><strong>${st.student_id}</strong></td>
+          <td>${st.name}</td>
+          <td style="text-align: center;"><span class="badge ${badgeClass}">${st.status}</span></td>
+          <td>${st.time}</td>
+        </tr>`;
+        tbody.innerHTML += row;
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  // Load the daily register on page open
+  fetchDailySheet();
 </script>
 
 </body>
