@@ -13,15 +13,16 @@
       --card-bg: #ffffff;
       --text: #1e293b;
       --muted: #64748b;
-      --border: #e2e8f0;
+      --border: #cbd5e1;
       --success: #16a34a;
+      --error: #dc2626;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     body {
@@ -32,7 +33,7 @@
       flex-direction: column;
     }
 
-    /* Header & Branding */
+    /* Header */
     header {
       background: var(--card-bg);
       border-bottom: 1px solid var(--border);
@@ -51,7 +52,6 @@
     }
 
     .logo-container {
-      position: relative;
       width: 52px;
       height: 52px;
       border-radius: 8px;
@@ -93,7 +93,6 @@
       color: var(--muted);
     }
 
-    /* Auth Banner / Profile Bar */
     .user-profile-badge {
       display: flex;
       align-items: center;
@@ -115,7 +114,6 @@
       font-weight: 600;
     }
 
-    /* Layout Containers */
     main {
       flex: 1;
       max-width: 1100px;
@@ -128,28 +126,34 @@
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      padding: 1.75rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
     }
 
-    /* Login Box */
+    /* Auth Screens */
     #authView {
       max-width: 420px;
-      margin: 3rem auto;
+      margin: 2.5rem auto;
       text-align: center;
     }
 
-    .form-group {
-      margin: 1.25rem 0;
-      text-align: left;
+    .simulation-banner {
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      color: #92400e;
+      padding: 0.65rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .form-group label {
-      display: block;
-      margin-bottom: 0.4rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--muted);
+    .simulation-banner strong {
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+      color: #78350f;
     }
 
     .phone-input-wrap {
@@ -159,6 +163,7 @@
       border-radius: 6px;
       overflow: hidden;
       background: #fff;
+      margin-top: 0.4rem;
     }
 
     .phone-input-wrap span {
@@ -178,6 +183,31 @@
       font-size: 1rem;
     }
 
+    /* 4-Box OTP Input */
+    .otp-input-group {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin: 1.25rem 0;
+    }
+
+    .otp-digit {
+      width: 48px;
+      height: 52px;
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 700;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .otp-digit:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
     .btn-submit {
       width: 100%;
       background: var(--primary);
@@ -189,13 +219,23 @@
       cursor: pointer;
       font-size: 0.95rem;
       transition: background 0.2s;
+      margin-top: 0.5rem;
     }
 
     .btn-submit:hover {
       background: var(--primary-light);
     }
 
-    /* Class Buttons */
+    .auth-footer {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Video Dashboard */
     .class-filter-bar {
       display: flex;
       flex-wrap: wrap;
@@ -215,18 +255,12 @@
       transition: all 0.2s;
     }
 
-    .btn-class:hover {
-      border-color: var(--primary-light);
-      color: var(--primary);
-    }
-
     .btn-class.active {
       background: var(--primary);
       color: #fff;
       border-color: var(--primary);
     }
 
-    /* Video Grid */
     .video-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -244,7 +278,7 @@
 
     .video-thumb {
       position: relative;
-      padding-top: 56.25%; /* 16:9 ratio */
+      padding-top: 56.25%;
       background: #0f172a;
     }
 
@@ -259,10 +293,6 @@
 
     .video-details {
       padding: 0.85rem;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
     }
 
     .video-details h3 {
@@ -272,8 +302,6 @@
     }
 
     .video-details .tag {
-      display: inline-block;
-      align-self: flex-start;
       font-size: 0.7rem;
       background: #dbeafe;
       color: var(--primary-light);
@@ -304,34 +332,64 @@
       </div>
     </div>
 
-    <!-- Active Profile & Phone Edit Bar -->
     <div id="userBadge" class="user-profile-badge hidden">
       <span>Logged in: <strong id="currentPhoneDisplay"></strong></span>
-      <button class="btn-text" onclick="enablePhoneEdit()">Edit Number</button>
+      <button class="btn-text" onclick="startEditPhone()">Change Number</button>
       <button class="btn-text" style="color: #dc2626;" onclick="handleLogout()">Logout</button>
     </div>
   </header>
 
   <main>
-    <!-- View 1: Registered Phone Number Login & Edit -->
+    <!-- Authentication Card -->
     <section id="authView" class="card">
-      <h2 id="authHeading" style="font-size: 1.2rem; margin-bottom: 0.4rem;">Student Video Login</h2>
-      <p style="font-size: 0.85rem; color: var(--muted);" id="authSubtitle">Enter your registered mobile number to view batch lectures</p>
-
-      <div class="form-group">
-        <label for="phoneInput">Registered Mobile Number</label>
-        <div class="phone-input-wrap">
-          <span>+91</span>
-          <input type="tel" id="phoneInput" placeholder="98XXXXXXXX" maxlength="10" />
-        </div>
+      <!-- Simulated SMS Toast (for testing) -->
+      <div id="simulatedToast" class="simulation-banner hidden">
+        <span>SMS Simulation Code: <strong id="simCodeDisplay">0000</strong></span>
+        <button class="btn-text" onclick="autoFillOtp()" style="color: #78350f;">Auto-Fill</button>
       </div>
 
-      <button id="submitPhoneBtn" class="btn-submit" onclick="submitPhoneNumber()">Enter Video Library</button>
+      <!-- Step 1: Phone Entry -->
+      <div id="phoneStep">
+        <h2 id="authHeading" style="font-size: 1.25rem; margin-bottom: 0.3rem;">Student Portal Login</h2>
+        <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 1.25rem;">Enter your registered 10-digit mobile number</p>
+
+        <div style="text-align: left; margin-bottom: 1.25rem;">
+          <label for="phoneInput" style="font-size: 0.85rem; font-weight: 600; color: var(--muted);">Mobile Number</label>
+          <div class="phone-input-wrap">
+            <span>+91</span>
+            <input type="tel" id="phoneInput" placeholder="98XXXXXXXX" maxlength="10" />
+          </div>
+        </div>
+
+        <button class="btn-submit" onclick="sendOtp()">Send OTP</button>
+      </div>
+
+      <!-- Step 2: OTP Verification -->
+      <div id="otpStep" class="hidden">
+        <h2 style="font-size: 1.25rem; margin-bottom: 0.3rem;">Verify OTP</h2>
+        <p style="font-size: 0.85rem; color: var(--muted);">
+          Code sent to +91 <span id="targetPhoneDisplay" style="font-weight: 600; color: var(--text);"></span>
+        </p>
+
+        <div class="otp-input-group">
+          <input type="text" class="otp-digit" maxlength="1" id="otp1" />
+          <input type="text" class="otp-digit" maxlength="1" id="otp2" />
+          <input type="text" class="otp-digit" maxlength="1" id="otp3" />
+          <input type="text" class="otp-digit" maxlength="1" id="otp4" />
+        </div>
+
+        <button class="btn-submit" onclick="verifyOtp()">Verify & Proceed</button>
+
+        <div class="auth-footer">
+          <button class="btn-text" onclick="backToPhone()">Change Number</button>
+          <span id="timerText">Resend in <strong id="countdown">30</strong>s</span>
+          <button id="resendBtn" class="btn-text hidden" onclick="sendOtp(true)">Resend OTP</button>
+        </div>
+      </div>
     </section>
 
-    <!-- View 2: Class-wise Video Dashboard -->
+    <!-- Step 3: Class-wise Video Dashboard -->
     <section id="dashboardView" class="hidden">
-      <!-- Clickable Class Buttons -->
       <div class="class-filter-bar">
         <button class="btn-class active" onclick="filterClass('all', this)">All Batches</button>
         <button class="btn-class" onclick="filterClass('10th', this)">Class 10th</button>
@@ -341,51 +399,49 @@
         <button class="btn-class" onclick="filterClass('neet', this)">NEET Prep</button>
       </div>
 
-      <!-- Videos Grid -->
-      <div id="videoContainer" class="video-grid">
-        <!-- Videos will populate here via JavaScript -->
-      </div>
+      <div id="videoContainer" class="video-grid"></div>
     </section>
   </main>
 
   <script>
-    // Sample Video Data (Replace video URLs with your YouTube/Drive/Vimeo embeds)
+    // Sample Video Lectures
     const videoData = [
-      { id: 1, title: "Class 10th - Quadratic Equations Masterclass", classId: "10th", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
-      { id: 2, title: "Class 11th - Kinematics & Laws of Motion", classId: "11th", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
-      { id: 3, title: "Class 12th - Electrostatics & Capacitance", classId: "12th", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
-      { id: 4, title: "JEE Advanced - Calculus Shortcuts & Problem Solving", classId: "jee", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
-      { id: 5, title: "NEET Biology - Human Physiology High-Yield Q&A", classId: "neet", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
-      { id: 6, title: "Class 10th - Chemical Reactions & Equations", classId: "10th", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" }
+      { id: 1, title: "Class 10th - Quadratic Equations", classId: "10th", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
+      { id: 2, title: "Class 11th - Kinematics & Motion Laws", classId: "11th", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
+      { id: 3, title: "Class 12th - Electrostatics & Potential", classId: "12th", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
+      { id: 4, title: "JEE Advanced - Calculus Shortcuts", classId: "jee", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" },
+      { id: 5, title: "NEET Biology - Human Physiology Q&A", classId: "neet", embedUrl: "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" }
     ];
 
-    // State Variables
     let userPhone = localStorage.getItem("jadhav_phone") || "";
-    let isEditing = false;
+    let generatedOtp = "";
+    let timerInterval = null;
+    let tempTargetPhone = "";
 
-    // Initialize application
     window.addEventListener("DOMContentLoaded", () => {
-      // Restore Logo if available
+      // Restore Logo
       const savedLogo = localStorage.getItem("jadhav_logo");
       if (savedLogo) applyLogo(savedLogo);
 
-      // Check Login Status
+      // Check session
       if (userPhone) {
         showDashboard();
       } else {
         showLoginView();
       }
+
+      setupOtpInputHandlers();
     });
 
-    // Logo Upload Handler
+    // Logo Upload Logic
     document.getElementById("logoInput").addEventListener("change", function(e) {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = function(evt) {
-          const base64Img = evt.target.result;
-          localStorage.setItem("jadhav_logo", base64Img);
-          applyLogo(base64Img);
+          const b64 = evt.target.result;
+          localStorage.setItem("jadhav_logo", b64);
+          applyLogo(b64);
         };
         reader.readAsDataURL(file);
       }
@@ -393,48 +449,160 @@
 
     function applyLogo(src) {
       const img = document.getElementById("logoPreview");
-      const placeholder = document.getElementById("logoPlaceholder");
       img.src = src;
       img.classList.remove("hidden");
-      placeholder.classList.add("hidden");
+      document.getElementById("logoPlaceholder").classList.add("hidden");
     }
 
-    // Phone Validation and Submission
-    function submitPhoneNumber() {
-      const phoneVal = document.getElementById("phoneInput").value.trim();
-
-      if (!/^[6-9]\d{9}$/.test(phoneVal)) {
+    // Step 1: Send OTP (Simulation + Gateway Hook)
+    async function sendOtp(isResend = false) {
+      const inputVal = document.getElementById("phoneInput").value.trim();
+      if (!/^[6-9]\d{9}$/.test(inputVal)) {
         alert("Please enter a valid 10-digit Indian mobile number.");
         return;
       }
 
-      userPhone = phoneVal;
-      localStorage.setItem("jadhav_phone", userPhone);
-      isEditing = false;
-      showDashboard();
+      tempTargetPhone = inputVal;
+
+      // 1. Generate 4-digit code
+      generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+
+      /* 
+       * PRODUCTION SMS GATEWAY (e.g., Fast2SMS / Twilio backend call):
+       * await fetch('/api/send-otp', {
+       *    method: 'POST',
+       *    headers: { 'Content-Type': 'application/json' },
+       *    body: JSON.stringify({ phone: tempTargetPhone, otp: generatedOtp })
+       * });
+       */
+
+      // Simulation Toast Display
+      const toast = document.getElementById("simulatedToast");
+      document.getElementById("simCodeDisplay").innerText = generatedOtp;
+      toast.classList.remove("hidden");
+
+      // Switch views to OTP input
+      document.getElementById("phoneStep").classList.add("hidden");
+      document.getElementById("otpStep").classList.remove("hidden");
+      document.getElementById("targetPhoneDisplay").innerText = tempTargetPhone;
+
+      clearOtpBoxes();
+      document.getElementById("otp1").focus();
+      startTimer();
     }
 
-    // Edit Phone Handler
-    function enablePhoneEdit() {
-      isEditing = true;
-      document.getElementById("authView").classList.remove("hidden");
+    // Step 2: Verify OTP
+    function verifyOtp() {
+      const enteredOtp = 
+        document.getElementById("otp1").value +
+        document.getElementById("otp2").value +
+        document.getElementById("otp3").value +
+        document.getElementById("otp4").value;
+
+      if (enteredOtp.length < 4) {
+        alert("Please enter the complete 4-digit OTP.");
+        return;
+      }
+
+      if (enteredOtp === generatedOtp) {
+        userPhone = tempTargetPhone;
+        localStorage.setItem("jadhav_phone", userPhone);
+        clearInterval(timerInterval);
+        document.getElementById("simulatedToast").classList.add("hidden");
+        showDashboard();
+      } else {
+        alert("Incorrect OTP. Please check the code and try again.");
+        clearOtpBoxes();
+        document.getElementById("otp1").focus();
+      }
+    }
+
+    function autoFillOtp() {
+      if (!generatedOtp) return;
+      document.getElementById("otp1").value = generatedOtp[0];
+      document.getElementById("otp2").value = generatedOtp[1];
+      document.getElementById("otp3").value = generatedOtp[2];
+      document.getElementById("otp4").value = generatedOtp[3];
+      document.getElementById("otp4").focus();
+    }
+
+    // Digit Box Key Handling (Auto-tab and backspace)
+    function setupOtpInputHandlers() {
+      const boxes = [
+        document.getElementById("otp1"),
+        document.getElementById("otp2"),
+        document.getElementById("otp3"),
+        document.getElementById("otp4")
+      ];
+
+      boxes.forEach((box, idx) => {
+        box.addEventListener("input", (e) => {
+          if (box.value && idx < 3) {
+            boxes[idx + 1].focus();
+          }
+        });
+        box.addEventListener("keydown", (e) => {
+          if (e.key === "Backspace" && !box.value && idx > 0) {
+            boxes[idx - 1].focus();
+          }
+        });
+      });
+    }
+
+    function clearOtpBoxes() {
+      ["otp1", "otp2", "otp3", "otp4"].forEach(id => {
+        document.getElementById(id).value = "";
+      });
+    }
+
+    // Countdown Timer for Resend
+    function startTimer() {
+      clearInterval(timerInterval);
+      let timeLeft = 30;
+      const countdownEl = document.getElementById("countdown");
+      const timerText = document.getElementById("timerText");
+      const resendBtn = document.getElementById("resendBtn");
+
+      timerText.classList.remove("hidden");
+      resendBtn.classList.add("hidden");
+      countdownEl.innerText = timeLeft;
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        countdownEl.innerText = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          timerText.classList.add("hidden");
+          resendBtn.classList.remove("hidden");
+        }
+      }, 1000);
+    }
+
+    function backToPhone() {
+      clearInterval(timerInterval);
+      document.getElementById("otpStep").classList.add("hidden");
+      document.getElementById("phoneStep").classList.remove("hidden");
+      document.getElementById("simulatedToast").classList.add("hidden");
+    }
+
+    function startEditPhone() {
       document.getElementById("dashboardView").classList.add("hidden");
-      document.getElementById("authHeading").innerText = "Update Registered Phone Number";
-      document.getElementById("authSubtitle").innerText = "Enter your new 10-digit registered number below";
-      document.getElementById("submitPhoneBtn").innerText = "Save & Update Number";
+      document.getElementById("authView").classList.remove("hidden");
+      document.getElementById("phoneStep").classList.remove("hidden");
+      document.getElementById("otpStep").classList.add("hidden");
       document.getElementById("phoneInput").value = userPhone;
+      document.getElementById("authHeading").innerText = "Update Registered Number";
       document.getElementById("phoneInput").focus();
     }
 
-    // Logout
     function handleLogout() {
       localStorage.removeItem("jadhav_phone");
       userPhone = "";
       document.getElementById("phoneInput").value = "";
+      document.getElementById("authHeading").innerText = "Student Portal Login";
       showLoginView();
     }
 
-    // UI View Switches
     function showDashboard() {
       document.getElementById("authView").classList.add("hidden");
       document.getElementById("dashboardView").classList.remove("hidden");
@@ -447,42 +615,37 @@
       document.getElementById("authView").classList.remove("hidden");
       document.getElementById("dashboardView").classList.add("hidden");
       document.getElementById("userBadge").classList.add("hidden");
-      document.getElementById("authHeading").innerText = "Student Video Login";
-      document.getElementById("authSubtitle").innerText = "Enter your registered mobile number to view batch lectures";
-      document.getElementById("submitPhoneBtn").innerText = "Enter Video Library";
+      document.getElementById("phoneStep").classList.remove("hidden");
+      document.getElementById("otpStep").classList.add("hidden");
     }
 
-    // Class Filtering
-    function filterClass(classCategory, element) {
-      document.querySelectorAll(".btn-class").forEach(btn => btn.classList.remove("active"));
-      element.classList.add("active");
-      renderVideos(classCategory);
+    // Class Filter
+    function filterClass(cat, el) {
+      document.querySelectorAll(".btn-class").forEach(b => b.classList.remove("active"));
+      el.classList.add("active");
+      renderVideos(cat);
     }
 
-    // Video Renderer
     function renderVideos(filter) {
       const container = document.getElementById("videoContainer");
       container.innerHTML = "";
 
-      const filteredList = filter === "all" 
-        ? videoData 
-        : videoData.filter(v => v.classId === filter);
-
-      if (filteredList.length === 0) {
-        container.innerHTML = `<p style="grid-column: 1/-1; color: var(--muted); text-align: center; padding: 2rem;">No lectures uploaded yet for this class.</p>`;
+      const list = filter === "all" ? videoData : videoData.filter(v => v.classId === filter);
+      if (list.length === 0) {
+        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--muted); padding: 2rem;">No lectures uploaded for this category.</p>`;
         return;
       }
 
-      filteredList.forEach(vid => {
+      list.forEach(item => {
         const card = document.createElement("div");
         card.className = "video-card";
         card.innerHTML = `
           <div class="video-thumb">
-            <iframe src="${vid.embedUrl}" allowfullscreen loading="lazy"></iframe>
+            <iframe src="${item.embedUrl}" allowfullscreen loading="lazy"></iframe>
           </div>
           <div class="video-details">
-            <h3>${vid.title}</h3>
-            <span class="tag">${vid.classId.toUpperCase()}</span>
+            <h3>${item.title}</h3>
+            <span class="tag">${item.classId.toUpperCase()}</span>
           </div>
         `;
         container.appendChild(card);
